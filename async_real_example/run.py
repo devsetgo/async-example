@@ -11,11 +11,11 @@ def get_task_list(url):
     else:
         x = r.json()
         for i in x:
-            print(f"ID: {i['id']}")
+            # print(f"ID: {i['id']}")
             id = f"{url}{i['id']}"
 
             # loop through to extend the amount of calls
-            for b in range(0,5):
+            for b in range(0, 100):
                 task_list.append(id)
 
     return task_list
@@ -42,22 +42,25 @@ def main():
 
     # call async_1
     print(f"There are {len(task_url)} tasks to be called.")
-    t_start_sync = time.time()
-    print(f"Starting sync test")
-    result_sync = sync_test(task_url)
-    t_duration_sync = time.time() - t_start_sync
-    print(f'The sync process took {int(t_duration_sync)} seconds to complete.')
+    # t_start_sync = time.time()
+    # print(f"Starting sync test")
+    # result_sync = sync_test(task_url)
+    # t_duration_sync = time.time() - t_start_sync
+    # rate_sync = len(task_url) / t_duration_sync
+    # print(f'The sync process took {t_duration_sync} seconds to complete at a rate of ~{rate_sync} calls per seconds.')
 
     t_start_async = time.time()
     print(f"Starting async test")
     result_async = async_fetch(task_url)
     t_duration_async = time.time() - t_start_async
-    print(f'The async process took {int(t_duration_async)} seconds to complete.')
+    rate_async = len(task_url) / t_duration_async
+    print(f'The async process took {t_duration_async} seconds to complete at a rate of {rate_async} calls per seconds.')
+
     # duration calc
     t_duration = time.time() - t_start
-    print(f'The process took {int(t_duration)} seconds to complete.')
-    t_faster = t_duration_sync - t_duration_async
-    print(f"How much faster is Async? {int(t_faster)} seconds or {int(t_duration_sync / t_duration_async)} times faster")
+    print(f'The entire test took {t_duration} seconds to complete')
+    # t_faster = t_duration_sync - t_duration_async
+    # print(f"How much faster is Async? {t_faster} seconds or {t_duration_sync / t_duration_async} times faster and {rate_async - rate_sync} calls per second faster")
 
     return
 

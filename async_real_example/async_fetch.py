@@ -40,7 +40,7 @@ def async_fetch(task_url):
     obj = loop.run_until_complete(future)
     loop.close()
     t1 = time.time() - t0
-    print(t1)
+    # print(t1)
 
     return obj
 

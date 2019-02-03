@@ -1,8 +1,9 @@
 import time
 import asyncio
-from aiohttp import ClientSession
+from aiohttp import ClientSession, TCPConnector
 
 task_info = []
+
 
 
 async def fetch(url, session):
@@ -16,7 +17,9 @@ async def run(r):
 
     # Fetch all responses within one Client session,
     # keep connection alive for all requests.
-    async with ClientSession() as session:
+    # for my test 150 was the optimal number
+    conn = TCPConnector(limit=150)
+    async with ClientSession(connector=conn) as session:
         for i in r:
             task = asyncio.ensure_future(fetch(i, session))
             tasks.append(task)
@@ -40,7 +43,7 @@ def async_fetch(task_url):
     obj = loop.run_until_complete(future)
     loop.close()
     t1 = time.time() - t0
-    # print(t1)
+    # print(int(t1))
 
     return obj
 

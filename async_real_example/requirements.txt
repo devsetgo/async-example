@@ -2,3 +2,4 @@ tqdm
 aiohttp
 requests
 colorama
+# uvloop #uncomment if you are on Linux, as uvloop is not compatible with windows

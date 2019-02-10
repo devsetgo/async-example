@@ -1,0 +1,5 @@
+aiohttp==3.5.4
+beautifulsoup4==4.7.1
+python-dotenv==0.10.1
+requests==2.21.0
+unsync==1.1

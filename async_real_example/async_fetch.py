@@ -1,5 +1,6 @@
 import time
 import asyncio
+# import uvloop
 from colorama import init as color_init, Fore, Back, Style
 from tqdm import tqdm
 from aiohttp import ClientSession, TCPConnector
@@ -26,7 +27,7 @@ async def run(r):
     # Fetch all responses within one Client session,
     # keep connection alive for all requests.
     # for my test 150 was the optimal number
-    conn = TCPConnector(limit=300)
+    conn = TCPConnector(limit=150)
     async with ClientSession(connector=conn) as session:
         for i in r:
             task = asyncio.ensure_future(fetch(i, session, url_count))
@@ -38,7 +39,7 @@ async def run(r):
             asyncio.as_completed(tasks),
             total=len(tasks),
             desc="Async Calls",
-            unit=" request",
+            unit=" request",smoothing=True
         ):
             bob.append(await f)
 
@@ -57,6 +58,7 @@ def print_responses(result):
 
 def async_fetch(task_url):
     t0 = time.time()
+    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(run(task_url))
     obj = loop.run_until_complete(future)

@@ -1,0 +1,18 @@
+{
+    "run": {
+        "run date": "2019-02-10 18:51:32",
+        "type": "async",
+        "calls": 59,
+        "rate": "132.51",
+        "duration": "0.45"
+    }
+},
+{
+    "run": {
+        "run date": "2019-02-10 18:51:32",
+        "type": "sync",
+        "calls": 59,
+        "rate": "4.60",
+        "duration": "12.81"
+    }
+}

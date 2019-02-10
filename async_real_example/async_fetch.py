@@ -10,7 +10,6 @@ color_init()
 task_info = []
 
 
-
 async def fetch(url, session, url_count):
     async with session.get(url) as response:
         c0 = f"start call {url_count}"
@@ -30,12 +29,17 @@ async def run(r):
     conn = TCPConnector(limit=300)
     async with ClientSession(connector=conn) as session:
         for i in r:
-            task = asyncio.ensure_future(fetch(i, session,url_count))
+            task = asyncio.ensure_future(fetch(i, session, url_count))
             tasks.append(task)
             url_count += 1
 
         bob = []
-        for f in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='Async Calls',unit=' request'):
+        for f in tqdm(
+            asyncio.as_completed(tasks),
+            total=len(tasks),
+            desc="Async Calls",
+            unit=" request",
+        ):
             bob.append(await f)
 
         responses = await asyncio.gather(*tasks)
@@ -44,11 +48,11 @@ async def run(r):
         # print_responses(responses)
         return responses
 
+
 def print_responses(result):
-    #print(result)
+    # print(result)
     for x in result:
         print(f"Task Name: {x['name']} created at {x['created']}")
-
 
 
 def async_fetch(task_url):
@@ -61,6 +65,7 @@ def async_fetch(task_url):
     # print(int(t1))
 
     return obj
+
 
 # if __name__ == '__main__':
 #     main()

@@ -1,5 +1,8 @@
+import datetime
 import time
 import requests
+import csv
+import json
 
 from tqdm import tqdm
 from async_fetch import async_fetch
@@ -18,7 +21,7 @@ def get_task_list(url):
             id = f"{url}{i['id']}"
 
             # loop through to extend the amount of calls
-            for b in range(0, 1000):
+            for b in range(0, 1):
                 task_list.append(id)
 
     return task_list
@@ -45,6 +48,8 @@ def main():
     url = "https://learning-camunda.devsetgo.com/rest/engine/default/task/"
     task_url = get_task_list(url)
     # print(f"There are {len(task_url)} tasks to fetch")
+    run_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     if len(task_url) < sync_test_threshold:
 
         # call async_1
@@ -58,12 +63,29 @@ def main():
         print(
             f"The sync process took {t_duration_sync:.2f} seconds to complete at a rate of ~{rate_sync:.2f} calls per seconds."
         )
+        sync_result = [run_time, 'sync', len(
+            task_url), f"{rate_sync:.2f}", f"{t_duration_sync:.2f}"]
+        sync_result_json = {"run":{"run date": run_time,
+                            "type": 'sync',
+                            "calls": len(task_url),
+                            "rate": f"{rate_sync:.2f}",
+                            "duration": f"{t_duration_sync:.2f}"
+                            }}
 
         t_start_async = time.time()
         print(f"Starting async test")
         result_async = async_fetch(task_url)
         t_duration_async = time.time() - t_start_async
         rate_async = len(task_url) / t_duration_async
+        async_result = [run_time, 'async', len(
+            task_url), f"{rate_async:.2f}", f"{t_duration_async:.2f}"]
+        async_result_json = {"run":{"run date": run_time,
+                             "type": 'async',
+                             "calls": len(task_url),
+                             "rate": f"{rate_async:.2f}",
+                             "duration": f"{t_duration_async:.2f}"
+                             }}
+
         print(
             f"The async process took {t_duration_async:.2f} seconds to complete at a rate of {rate_async:.2f} calls per seconds."
         )
@@ -75,6 +97,10 @@ def main():
         print(
             f"How much faster is Async? {t_faster:.2f} seconds or {(t_duration_sync / t_duration_async):.2f} times faster and {(rate_async - rate_sync):.2f} calls per second faster"
         )
+        write_csv(async_result)
+        write_csv(sync_result)
+        write_json(async_result_json)
+        write_json(sync_result_json)
     else:
         print(
             f"Over Test Threshold of {sync_test_threshold} and will only proceed wth Async Test and fetch {len(task_url)} tasks"
@@ -84,11 +110,37 @@ def main():
         result_async = async_fetch(task_url)
         t_duration_async = time.time() - t_start_async
         rate_async = len(task_url) / t_duration_async
+        async_result = [run_time, 'async', len(
+            task_url), f"{rate_async:.2f}", f"{t_duration_async:.2f}"]
+        async_result_json = {"run":{"run date": run_time,
+                             "type": 'async',
+                             "calls": len(task_url),
+                             "rate": f"{rate_async:.2f}",
+                             "duration": f"{t_duration_async:.2f}"
+                             }}
         print(
             f"The async process took {t_duration_async:.2f} seconds to complete at a rate of {rate_async:.2f} calls per seconds."
         )
-        # print(f"Process Results = {len(result_async)}")
+        write_csv(async_result)
+        write_json(async_result_json)
+
     return
+
+
+def write_csv(csv_results):
+    # print(results)
+    with open('data/data.csv', 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(csv_results)
+
+
+def write_json(json_results):
+    # print(results)
+    with open('data/data.json', 'a') as jsonfile:
+        # comma = ','
+        # json.dump(comma, jsonfile)
+        json.dump(json_results, jsonfile, indent=4)
+        # jsonfile.write(",\n")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import time
 import requests
 
-from tqdm import tqdm, trange
+from tqdm import tqdm
 from async_fetch import async_fetch
 
 
@@ -37,8 +37,8 @@ def sync_test(task_url):
 
 
 def main():
-    # Change this to set a limit on how many Sync calls to make during the test.
-    sync_test_threshold = 100
+    # Set maximum limit of sync calls before skipping sync test - because it is really slow.
+    sync_test_threshold = 200
     # start the clock
     t_start = time.time()
     # call API

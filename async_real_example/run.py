@@ -15,12 +15,15 @@ def get_task_list(url):
         x = r.json()
         for i in x:
             # print(f"ID: {i['id']}")
-            id = f"{url}{i['id']}"
-
+            if 'sample' in url:
+                id = f"http://127.0.0.1:5000/sample/{i['id']}"
+            else:
+                id = f"{url}{i['id']}"
+            
             # loop through to extend the amount of calls
-            for b in range(0, 1000):
+            for b in range(0, 200):
                 task_list.append(id)
-
+                
     return task_list
 
 
@@ -42,7 +45,11 @@ def main():
     # start the clock
     t_start = time.time()
     # call API
-    url = "https://learning-camunda.devsetgo.com/rest/engine/default/task/"
+    # url = "https://learning-camunda.devsetgo.com/rest/engine/default/task/" #H2
+    url = 'http://127.0.0.1:5000/sample/?delay=0&qty=1000'
+    # url = 'https://camunda-engine.devsetgo.com/rest/engine/default/task' #Let's encrypt/postgres
+    # url = 'http://142.93.112.31:32789/rest/engine/default/task' # no SSL/postgres
+    
     task_url = get_task_list(url)
     # print(f"There are {len(task_url)} tasks to fetch")
     if len(task_url) < sync_test_threshold:

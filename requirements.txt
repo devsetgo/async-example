@@ -2,4 +2,4 @@ aiohttp==3.5.4
 beautifulsoup4==4.8.0
 python-dotenv==0.10.3
 requests==2.22.0
-unsync==1.2
+unsync==1.2.1
